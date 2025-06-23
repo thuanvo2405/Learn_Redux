@@ -15,7 +15,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.8.2",
+    "@reduxjs/toolkit": "^1.9.5",
     "immer": "^10.1.1",
     "lodash": "^4.17.21",
     "redux": "^5.0.1",

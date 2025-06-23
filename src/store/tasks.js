@@ -1,55 +1,32 @@
+import { createAction, createReducer,createSlice } from "@reduxjs/toolkit";
+
+
 // Action type
 const ADD_TASK = "ADD_TASK";
 const REMOVE_TASK = "REMOVE_TASK";
 const COMPLETED_TASK = "COMPLETED_TASK";
 
 // Action
-export const addTask = (task) => {
-  return {
-    type: ADD_TASK,
-    payload: { task },
-  };
-};
-
-export const removeTask = (id) => {
-  return { type: REMOVE_TASK, payload: { id } };
-};
-
-export const completedTask = (id) => {
-  return { type: COMPLETED_TASK, payload: { id } };
-};
-
-export const fetchTodo = () => async (dispatch) => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/todos/1");
-  const task = await response.json();
-  dispatch(addTask(task.title));
-};
+export const addTask = createAction("ADD_TASK");
+export const removeTask = createAction("REMOVE_TASK");
+export const completedTask = createAction("COMPLETED_TASK");
 
 // Reducer
 
 let id = 0;
 
-export default function reducer(state = [], action) {
-  switch (action.type) {
-    case ADD_TASK:
-      return [
-        ...state,
-        {
-          id: id++,
-          task: action.payload.task,
-          complete: false,
-        },
-      ];
+export default createReducer([], {
+  [addTask.type]: (state, action) => {
+    state.push({ id: id++, task: action.payload.task, complete: false });
+  },
 
-    case REMOVE_TASK:
-      return state.filter((task) => task.id !== action.payload.id);
+  [removeTask.type]: (state, action) => {
+    const index = state.findIndex((task) => task.id === action.payload.id);
+    state.splice(index, 1);
+  },
 
-    case COMPLETED_TASK:
-      return state.map((task) =>
-        task.id === action.payload.id ? { ...task, complete: true } : task
-      );
-
-    default:
-      return state;
-  }
-}
+  [completedTask.type]: (state, action) => {
+    const index = state.findIndex((task) => task.id === action.payload.id);
+    state[index].complete = true;
+  },
+});
